@@ -568,7 +568,9 @@
 
                 // Small Indicator if Diary exists
                 let diaryDot = '';
-                if (dayData && dayData.diary) {
+                const hasEvents = dayData && dayData.events && dayData.events.length > 0;
+                const hasDiary = dayData && dayData.diary;
+                if (hasEvents || hasDiary) {
                     diaryDot = `<span class="w-1.5 h-1.5 rounded-full bg-pink-400 absolute top-1.5 right-1.5"></span>`;
                 }
 
