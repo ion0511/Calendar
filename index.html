@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calendar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans KR -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #f3f4f6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* Dynamic height for mobile lockscreen swipe */
+        .lock-screen-transition {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+        }
+
+        /* Calendar grid cell ratio */
+        .calendar-grid {
+            grid-template-rows: auto repeat(6, minmax(80px, 1fr));
+        }
+
+        @media (max-width: 640px) {
+            .calendar-grid {
+                grid-template-rows: auto repeat(6, minmax(72px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex justify-center items-center">
+
+    <!-- Mobile Frame Container -->
+    <div class="relative w-full max-w-md h-full sm:h-[90vh] sm:rounded-[40px] shadow-2xl overflow-hidden bg-white flex flex-col border-0 sm:border-[8px] sm:border-slate-800">
+
+        <!-- ========================================== -->
+        <!-- 1. LOCK SCREEN OVERLAY                     -->
+        <!-- ========================================== -->
+        <div id="lockScreen" class="absolute inset-0 z-50 flex flex-col justify-between p-8 text-white lock-screen-transition bg-cover bg-center cursor-grab active:cursor-grabbing"
+             style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000&auto=format&fit=crop');">
+            
+            <!-- Top Status & Clock -->
+            <div class="flex flex-col items-center pt-10 space-y-2">
+                <i class="fa-solid fa-lock text-xl text-white/80 mb-1"></i>
+                <div id="lockTime" class="text-6xl font-light tracking-tight">09:41</div>
+                <div id="lockDate" class="text-lg font-medium text-white/90">12월 31일 수요일</div>
+            </div>
+
+            <!-- Bottom Swipe Up Prompt -->
+            <div class="flex flex-col items-center pb-8 space-y-3 animate-bounce">
+                <i class="fa-solid fa-chevron-up text-xl text-white/70"></i>
+                <span class="text-xs font-semibold tracking-widest uppercase text-white/80 bg-black/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
+                    밀어서 잠금해제
+                </span>
+            </div>
+        </div>
+
+
+        <!-- ========================================== -->
+        <!-- 2. MAIN APP CONTAINER                      -->
+        <!-- ========================================== -->
+        
+        <!-- App Header (Minimal Google Calendar Style) -->
+        <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shrink-0 z-10">
+            <div class="flex items-center space-y-0 space-x-3">
+                <button class="text-gray-600 hover:text-gray-900 p-1.5 rounded-full hover:bg-gray-100 transition">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-800 tracking-tight">Calendar</h1>
+            </div>
+
+            <!-- Month Selector Controls -->
+            <div class="flex items-center space-x-1 bg-gray-100 p-1 rounded-xl">
+                <button onclick="changeMonth('oct')" id="btn-oct" class="px-3 py-1 text-xs font-medium rounded-lg text-gray-600 transition">10월</button>
+                <button onclick="changeMonth('nov')" id="btn-nov" class="px-3 py-1 text-xs font-medium rounded-lg text-gray-600 transition">11월</button>
+                <button onclick="changeMonth('dec')" id="btn-dec" class="px-3 py-1 text-xs font-medium rounded-lg bg-white text-gray-900 shadow-sm font-semibold transition">12월</button>
+            </div>
+        </header>
+
+        <!-- Calendar Sub-header (Days of Week) -->
+        <div class="grid grid-cols-7 border-b border-gray-200 bg-gray-50/50 text-center text-xs font-medium text-gray-500 py-2.5 shrink-0">
+            <div class="text-red-500">일</div>
+            <div>월</div>
+            <div>화</div>
+            <div>수</div>
+            <div>목</div>
+            <div>금</div>
+            <div class="text-blue-500">토</div>
+        </div>
+
+        <!-- Calendar Grid (Scrollable Viewport) -->
+        <main class="flex-1 overflow-y-auto bg-white">
+            <div id="calendarGrid" class="grid grid-cols-7 border-b border-gray-100 min-h-full">
+                <!-- Days inserted dynamically by JS -->
+            </div>
+        </main>
+
+
+        <!-- ========================================== -->
+        <!-- 3. DAY DETAILS & DIARY BOTTOM SHEET        -->
+        <!-- ========================================== -->
+        <div id="detailModal" class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex justify-end flex-col sm:absolute">
+            
+            <div id="modalContent" class="bg-white rounded-t-3xl p-5 max-h-[75%] overflow-y-auto transform translate-y-full transition-transform duration-300 ease-out shadow-2xl border-t border-gray-100 flex flex-col space-y-4">
+                
+                <!-- Modal Drag Handle & Close Button -->
+                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                    <div>
+                        <span id="modalFullDate" class="text-xs font-bold text-indigo-600 uppercase tracking-wider">2025년 12월 25일</span>
+                        <h2 id="modalDayTitle" class="text-xl font-bold text-gray-900">크리스마스 일정</h2>
+                    </div>
+                    <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:text-gray-800 flex items-center justify-center transition">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Event List Tag Group -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">오늘의 일정</h3>
+                    <div id="modalEventList" class="flex flex-wrap gap-2">
+                        <!-- Events injected here -->
+                    </div>
+                </div>
+
+                <!-- Diary Note Bubble Section -->
+                <div id="modalDiarySection" class="pt-2">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">여주의 일기장</h3>
+                    <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 text-gray-800 text-sm leading-relaxed relative">
+                        <i class="fa-solid fa-quote-left text-indigo-200 text-xl absolute top-3 left-3 -z-0"></i>
+                        <p id="modalDiaryText" class="relative z-10 font-normal">
+                            일기 내용이 여기 표시됩니다.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // DATA MODEL (OCT 16, 2025 - DEC 31, 2025)
+        // ==========================================
+        const calendarData = {
+            // OCTOBER 2025
+            "2025-10-16": {
+                events: [{ title: "국혼 발표", color: "rose" }, { title: "태후·황후마마 강제 면담", color: "violet" }],
+                diary: "오늘 애들이랑 같이 캔버스 왁구 짜기로 했는데 엄마 아빠가 갑자기 집으로 오라길래 갔더니 그대로 궁으로 끌려감... 태후마마랑 황후마마 앞에서 숨도 못 쉬고 앉아있다 왔다. 15년 전에 선황 폐하랑 우리 할아버지가 약속한 거라는데 왜 내가 당해야 함? 😭 오시온 이 인간은 얼굴도 안 비추고 진짜 개빡친다."
+            },
+            "2025-10-20": {
+                events: [{ title: "한예고 미술과 2학기 실기평가", color: "indigo" }],
+                diary: null
+            },
+            "2025-10-21": {
+                events: [{ title: "동궁전 예법서 전달", color: "amber" }],
+                diary: null
+            },
+            "2025-10-24": {
+                events: [{ title: "공식 입궁", color: "rose" }, { title: "대례복 1차 치수 측정", color: "emerald" }],
+                diary: "결국 오늘 입궁함. 침서가 넓긴 한데 잠이 올 리가 있나. 침선장 어르신 오셔서 대례복 치수 재는데 옷이 무슨 100근은 되는 것 같음 웩. 벌써 집에 가고 싶다. 여기서 어떻게 평생 살아ㅠㅠㅠ"
+            },
+            "2025-10-27": {
+                events: [{ title: "가례 순서 및 국혼 의절 훈련", color: "violet" }],
+                diary: "최상궁 언니의 족집게 강의 시작됨. 발걸음 각도까지 지적받음. 오시온 이 자식은 지나가면서 자세가 엉성하다고 한마디 던지고 가는데 진짜 꿀밤 때리고 싶다👊👊"
+            },
+            "2025-10-29": {
+                events: [{ title: "수행평가 회의 (줌)", color: "sky" }],
+                diary: "애들한테 학교 야자 튀는 법 전수받았는데 야자는 튀어도 궁에선 못 튄다는 말이다 어휴..."
+            },
+
+            // NOVEMBER 2025
+            "2025-11-01": {
+                events: [{ title: "예법 문답", color: "amber" }],
+                diary: "토요일인데도 문안 인사는 드리는구나. 밤에는 몰래 패드에다 풍경화 구도만 슬쩍 끄적였다. 궁에서는 붓도 못 잡게 하니까 답답해 미칠 것 같음... 살기 위해 머리로라도 그린다😭"
+            },
+            "2025-11-04": {
+                events: [{ title: "예법 문답 오답노트", color: "amber" }],
+                diary: null
+            },
+            "2025-11-06": {
+                events: [{ title: "가례 의절·교명문 암기 시험", color: "rose" }],
+                diary: "지옥의 예법 시험 끝. 오시온이 갑자기 찾아오는 바람에 컨닝한 거 들켜서 최상궁 언니한테 엄청 혼났다ㅠㅠ 그래도 통과해서 다행😮‍💨"
+            },
+            "2025-11-10": {
+                events: [{ title: "졸전 1차 검토", color: "indigo" }, { title: "대례복 적의 최종 시착", color: "emerald" }],
+                diary: "학교에선 선생님이 졸전 진도 늦다고 혼내고 궁에서는 최상궁 언니가 걸음걸이 빠르다고 혼냄. 나더러 어쩌라고!"
+            },
+            "2025-11-12": {
+                events: [{ title: "집에 다녀옴!", color: "sky" }],
+                diary: "근위대 눈 피해서 택시 타고 집으로 튀었는데 오시온 이 자식이 바로 쫓아옴ㅠㅠ 그래도 오랜만에 엄마 아빠 보고 밥 따뜻하게 먹어서 좋았다."
+            },
+            "2025-11-13": {
+                events: [{ title: "황후전 문안 (밤)", color: "violet" }],
+                diary: "오시온 차 타고 강제 복귀당함. 최상궁 언니한테 잔소리 엄청 들었는데 황후마마한테도 또 들었다ㅠㅠ 오시온 넌 두고 봐라."
+            },
+            "2025-11-15": {
+                events: [{ title: "국혼 공식 사진 촬영", color: "rose" }],
+                diary: null
+            },
+            "2025-11-17": {
+                events: [{ title: "졸전 2차 검토", color: "indigo" }],
+                diary: null
+            },
+            "2025-11-18": {
+                events: [],
+                diary: "카메라 앞에서 웃느라 입술 경련 일어나는 줄 알았다. 근데 옆에서 오시온 이 자식이 억지 미소라고 놀림. 그래 너 사진 잘 받아서 좋겠다;"
+            },
+            "2025-11-21": {
+                events: [{ title: "가례 법도 최종 점검", color: "amber" }],
+                diary: null
+            },
+            "2025-11-22": {
+                events: [{ title: "궁내 하례 예행 연습", color: "violet" }],
+                diary: null
+            },
+            "2025-11-23": {
+                events: [{ title: "궁내 하례 예행 연습", color: "violet" }],
+                diary: null
+            },
+            "2025-11-24": {
+                events: [{ title: "국혼 전야 자정 하례", color: "rose" }],
+                diary: "내일이 국혼이라니 말도 안 됨. 적관 잠깐 썼을 뿐인데 무거워 죽는 줄ㅠㅠ 이걸 어떻게 하루 종일 쓰고 있지? 오시온이 대신 써주면 안 되나?😑"
+            },
+            "2025-11-25": {
+                events: [{ title: "국혼", color: "rose" }],
+                diary: "드디어 결혼식... 아니 국혼 함. 대례복 무게만 10kg은 나가는 듯. 가만히 서 있는데 목디스크 오는 줄 알았다. 카메라 플래시 터지는데 속으로 떨지 말자고 수백 번 외침. 오시온 옆모습 보는데 저 자식도 긴장했는지 턱선이 굳어 있더라. 짜식. 으. 너무 추웠어..."
+            },
+            "2025-11-26": {
+                events: [{ title: "하례 인사", color: "amber" }],
+                diary: null
+            },
+            "2025-11-27": {
+                events: [{ title: "야작 시작", color: "indigo" }],
+                diary: "이제 국혼도 끝났으니 본격적으로 졸전 준비 시작! 애들이랑 한 달 만에 엽떡 흡입함ㅎㅎ 국혼 수라상보다 엽떡이 100배 맛있다!!!"
+            },
+            "2025-11-28": {
+                events: [{ title: "미술실 조명 점검", color: "indigo" }],
+                diary: "오시온이랑 여전히 냉전 중. 오늘도 밤 10시 넘게 야작하는데 공 내관님이 차 대기시켜놓고 계셔서 어쩔 수 없이 귀가함."
+            },
+            "2025-11-29": {
+                events: [{ title: "미술실 작업(8시)", color: "sky" }],
+                diary: null
+            },
+            "2025-11-30": {
+                events: [{ title: "미술실 작업(8시)", color: "sky" }, { title: "캔버스 초벌 마감", color: "emerald" }],
+                diary: null
+            },
+
+            // DECEMBER 2025
+            "2025-12-01": {
+                events: [{ title: "12월 월간 궁중 행차 일정 브리핑", color: "violet" }, { title: "동궁전 회의", color: "amber" }],
+                diary: null
+            },
+            "2025-12-02": {
+                events: [{ title: "유화 채색 2차", color: "indigo" }, { title: "황후전 차담회", color: "emerald" }],
+                diary: "학교에서 붓 잡다가 궁 와서 찻잔 들려니 손이 덜덜 떨림."
+            },
+            "2025-12-04": {
+                events: [{ title: "미술과 실기실 대청소 및 마감 준비", color: "sky" }],
+                diary: null
+            },
+            "2025-12-05": {
+                events: [{ title: "졸작 3차 검토", color: "indigo" }, { title: "방과 후 담임 면담", color: "amber" }],
+                diary: null
+            },
+            "2025-12-06": {
+                events: [{ title: "💥 태후전 문안", color: "rose" }],
+                diary: "문안 인사 드리다 쌍코피 팡 터짐... 태후마마 기겁하시고 오시온이 나 끌고 나감. 근데 이 개자식이 감히 내 그림 작업을 금지시켜? 야 캔버스 배경 마무리해야 된다고 ㅠㅠㅠ!"
+            },
+            "2025-12-07": {
+                events: [{ title: "동궁전 휴식", color: "sky" }],
+                diary: "궁에서 쉬고 있는데 오시온이 학교에 있던 내 졸전 캔버스를 별궁으로 가지고 옴. 어이없어... 그래도 별궁에서 작업할 수 있게 해줬으니 그림은 완성해야지😡"
+            },
+            "2025-12-08": {
+                events: [{ title: "별궁 야간 유화 작업", color: "indigo" }],
+                diary: null
+            },
+            "2025-12-12": {
+                events: [{ title: "졸작 캡션(작품 설명) 작성", color: "indigo" }],
+                diary: null
+            },
+            "2025-12-13": {
+                events: [{ title: "유화 마무리 작업", color: "emerald" }],
+                diary: "이제 졸전까지 5일 남음. 마지막 작업하느라 하루 종일 별궁에서 안 나감. 그래도 졸전 얼마 안 남아서 작업하게 봐줘서 다행이다. 오시온도 나 안 찾던데 설마 자기 작업 바빠서 봐준 건 아니겠지?"
+            },
+            "2025-12-15": {
+                events: [{ title: "황실 주간 회의 참석", color: "violet" }],
+                diary: null
+            },
+            "2025-12-17": {
+                events: [{ title: "졸전 캔버스 건조 확인", color: "sky" }],
+                diary: null
+            },
+            "2025-12-18": {
+                events: [{ title: "🎨 졸업 전시회 개막", color: "rose" }],
+                diary: "황실 어른들 오셔서 민망해 죽는 줄 알았는데 오시온 이 미친자가 자기 출품작이랍시고 내 얼굴 걸어놓음😳 진심 쪽팔려 미칠 것 같아서 복수하겠다고 오시온 볼에 냅다 뽀뽀해 버림. 오시온 당황한 표정 어이없어. 흥."
+            },
+            "2025-12-22": {
+                events: [{ title: "황실 자선 바자회 참석", color: "emerald" }],
+                diary: null
+            },
+            "2025-12-23": {
+                events: [{ title: "황실 연말 감사제 리허설", color: "amber" }],
+                diary: null
+            },
+            "2025-12-24": {
+                events: [{ title: "🎄 별궁 궁꾸 (트리 완성)", color: "rose" }],
+                diary: "내일 파티 준비한다고 정신 없었는데 오시온이 느닷 없이 찾아와서 시비 거는 바람에 싸우다가 기습 키스당함... 미친 거 아님?! 진짜 고소할 거야 이 개자식!!!"
+            },
+            "2025-12-25": {
+                events: [{ title: "황실 어린이 자선행사", color: "emerald" }, { title: "별궁 크리스마스 파티", color: "rose" }],
+                diary: "오전에 오시온이랑 어린이 자선행사 다녀오고, 오후에는 애들이랑 크리스마스 파티함! 밤새 놀려고 했는데 오시온이 잠은 동궁전에서 자야 한다고 고집 피워서 끌려옴. 크리스마스 선물이라고 보석 목걸이 주는데, 감동은 무슨! 앙금 안 풀렸다 너.."
+            },
+            "2025-12-26": {
+                events: [{ title: "황실 연말 감사제 준비", color: "amber" }],
+                diary: null
+            },
+            "2025-12-29": {
+                events: [{ title: "겨울방학 시작", color: "sky" }, { title: "연말 종묘제례 교육", color: "violet" }],
+                diary: "드디어 방학... 그러나 황태자비에게 방학이란 없다. 종묘제례 공부 시작함😭"
+            },
+            "2025-12-31": {
+                events: [{ title: "🎆 보신각 타종행사", color: "rose" }],
+                diary: "보신각 행사 끝나고 황실 별장. 2025년 마지막 날을 별장에서 단둘이 보내다니... 내 다사다난 고3 인생 수고했다 진짜."
+            }
+        };
+
+        // Color badge dictionary for subtle Tailwind styling
+        const colorClasses = {
+            rose: "bg-rose-100 text-rose-700 border-rose-200",
+            indigo: "bg-indigo-100 text-indigo-700 border-indigo-200",
+            amber: "bg-amber-100 text-amber-700 border-amber-200",
+            emerald: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            violet: "bg-violet-100 text-violet-700 border-violet-200",
+            sky: "bg-sky-100 text-sky-700 border-sky-200"
+        };
+
+        let currentActiveMonth = 'dec'; // Default active view: December
+
+        // ==========================================
+        // CALENDAR GENERATION LOGIC
+        // ==========================================
+        function renderCalendar(monthKey) {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            let year = 2025;
+            let monthIndex; // 0-indexed: Oct=9, Nov=10, Dec=11
+
+            if (monthKey === 'oct') monthIndex = 9;
+            else if (monthKey === 'nov') monthIndex = 10;
+            else monthIndex = 11;
+
+            const firstDay = new Date(year, monthIndex, 1).getDay(); // 0 is Sunday
+            const totalDays = new Date(year, monthIndex + 1, 0).getDate();
+
+            // Render Previous Month Padding Cells
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'border-b border-r border-gray-100 bg-gray-50/40 p-1 min-h-[75px] opacity-40';
+                grid.appendChild(emptyCell);
+            }
+
+            // Render Month Days
+            for (let day = 1; day <= totalDays; day++) {
+                const dayStr = String(day).padStart(2, '0');
+                const monthStr = String(monthIndex + 1).padStart(2, '0');
+                const dateKey = `${year}-${monthStr}-${dayStr}`;
+
+                const dayData = calendarData[dateKey] || { events: [], diary: null };
+                const dayOfWeek = new Date(year, monthIndex, day).getDay();
+
+                const cell = document.createElement('div');
+                cell.className = 'border-b border-r border-gray-100 p-1 min-h-[75px] flex flex-col justify-start items-start cursor-pointer hover:bg-gray-50/80 transition relative group';
+                cell.onclick = () => openModal(dateKey, dayData, dayOfWeek);
+
+                // Day number header
+                let textColor = 'text-gray-800';
+                if (dayOfWeek === 0) textColor = 'text-red-500 font-medium';
+                if (dayOfWeek === 6) textColor = 'text-blue-500 font-medium';
+
+                // Highlight special milestone dates
+                const isSpecial = dateKey === "2025-11-25" || dateKey === "2025-12-18" || dateKey === "2025-12-25";
+                const numBadge = isSpecial 
+                    ? `<span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center font-bold">${day}</span>`
+                    : `<span class="text-xs ${textColor}">${day}</span>`;
+
+                let eventsHtml = '';
+                if (dayData.events && dayData.events.length > 0) {
+                    eventsHtml = `<div class="w-full flex flex-col gap-1 mt-1">`;
+                    dayData.events.forEach(ev => {
+                        const badgeStyle = colorClasses[ev.color] || colorClasses.indigo;
+                        eventsHtml += `
+                            <div class="px-1.5 py-0.5 text-[10px] rounded border leading-tight truncate w-full font-medium ${badgeStyle}">
+                                ${ev.title}
+                            </div>
+                        `;
+                    });
+                    eventsHtml += `</div>`;
+                }
+
+                // Diary icon indicator if entry exists
+                const diaryIconHtml = dayData.diary 
+                    ? `<div class="absolute top-1 right-1 text-[10px] text-indigo-500"><i class="fa-solid fa-book-open"></i></div>` 
+                    : '';
+
+                cell.innerHTML = `
+                    <div class="w-full flex justify-between items-center px-0.5">
+                        ${numBadge}
+                        ${diaryIconHtml}
+                    </div>
+                    ${eventsHtml}
+                `;
+
+                grid.appendChild(cell);
+            }
+
+            // Fill remaining grid spaces to keep aesthetic alignment
+            const totalCellsRendered = firstDay + totalDays;
+            const remainingCells = (7 - (totalCellsRendered % 7)) % 7;
+            for (let i = 0; i < remainingCells; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'border-b border-r border-gray-100 bg-gray-50/40 p-1 min-h-[75px] opacity-40';
+                grid.appendChild(emptyCell);
+            }
+        }
+
+        function changeMonth(mKey) {
+            currentActiveMonth = mKey;
+
+            // Reset tab styles
+            ['oct', 'nov', 'dec'].forEach(k => {
+                const btn = document.getElementById(`btn-${k}`);
+                if (k === mKey) {
+                    btn.className = "px-3 py-1 text-xs rounded-lg bg-white text-gray-900 shadow-sm font-semibold transition";
+                } else {
+                    btn.className = "px-3 py-1 text-xs rounded-lg text-gray-600 hover:text-gray-900 font-medium transition";
+                }
+            });
+
+            renderCalendar(mKey);
+        }
+
+        // ==========================================
+        // MODAL / BOTTOM SHEET CONTROLS
+        // ==========================================
+        function openModal(dateKey, data, dayOfWeek) {
+            const modal = document.getElementById('detailModal');
+            const content = document.getElementById('modalContent');
+            
+            const [y, m, d] = dateKey.split('-');
+            const daysMap = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+
+            document.getElementById('modalFullDate').innerText = `${y}년 ${parseInt(m)}월 ${parseInt(d)}일 ${daysMap[dayOfWeek]}`;
+            document.getElementById('modalDayTitle').innerText = `${parseInt(m)}월 ${parseInt(d)}일 기록`;
+
+            // Event Tags render
+            const eventListEl = document.getElementById('modalEventList');
+            eventListEl.innerHTML = '';
+            if (data.events && data.events.length > 0) {
+                data.events.forEach(ev => {
+                    const badgeStyle = colorClasses[ev.color] || colorClasses.indigo;
+                    const tag = document.createElement('span');
+                    tag.className = `px-2.5 py-1 text-xs rounded-lg font-medium border ${badgeStyle}`;
+                    tag.innerText = ev.title;
+                    eventListEl.appendChild(tag);
+                });
+            } else {
+                eventListEl.innerHTML = `<span class="text-xs text-gray-400 font-normal">등록된 일정이 없습니다.</span>`;
+            }
+
+            // Diary render
+            const diarySec = document.getElementById('modalDiarySection');
+            const diaryText = document.getElementById('modalDiaryText');
+            if (data.diary) {
+                diarySec.classList.remove('hidden');
+                diaryText.innerText = data.diary;
+            } else {
+                diarySec.classList.add('hidden');
+            }
+
+            // Show sheet with transition
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+            content.classList.remove('translate-y-full');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detailModal');
+            const content = document.getElementById('modalContent');
+
+            content.classList.add('translate-y-full');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('pointer-events-none');
+            }, 300);
+        }
+
+        // ==========================================
+        // LOCK SCREEN SWIPE GESTURE LOGIC
+        // ==========================================
+        const lockScreen = document.getElementById('lockScreen');
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+
+        function updateLockTime() {
+            const now = new Date();
+            const hrs = String(now.getHours()).padStart(2, '0');
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('lockTime').innerText = `${hrs}:${mins}`;
+        }
+        updateLockTime();
+
+        // Touch Events
+        lockScreen.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            isDragging = true;
+            lockScreen.style.transition = 'none';
+        });
+
+        lockScreen.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+            if (deltaY < 0) {
+                lockScreen.style.transform = `translateY(${deltaY}px)`;
+                lockScreen.style.opacity = `${1 + deltaY / 400}`;
+            }
+        });
+
+        lockScreen.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const deltaY = currentY - startY;
+            lockScreen.style.transition = 'transform 0.4s ease, opacity 0.35s ease';
+            if (deltaY < -100) {
+                unlockScreen();
+            } else {
+                lockScreen.style.transform = 'translateY(0)';
+                lockScreen.style.opacity = '1';
+            }
+        });
+
+        // Mouse Drag Fallback for Desktop Testing
+        lockScreen.addEventListener('mousedown', (e) => {
+            startY = e.clientY;
+            isDragging = true;
+            lockScreen.style.transition = 'none';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            currentY = e.clientY;
+            const deltaY = currentY - startY;
+            if (deltaY < 0) {
+                lockScreen.style.transform = `translateY(${deltaY}px)`;
+                lockScreen.style.opacity = `${1 + deltaY / 400}`;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const deltaY = currentY - startY;
+            lockScreen.style.transition = 'transform 0.4s ease, opacity 0.35s ease';
+            if (deltaY < -80) {
+                unlockScreen();
+            } else {
+                lockScreen.style.transform = 'translateY(0)';
+                lockScreen.style.opacity = '1';
+            }
+        });
+
+        function unlockScreen() {
+            lockScreen.style.transform = 'translateY(-100%)';
+            lockScreen.style.opacity = '0';
+            setTimeout(() => {
+                lockScreen.style.display = 'none';
+            }, 400);
+        }
+
+        // Initialize App View
+        window.onload = () => {
+            renderCalendar(currentActiveMonth);
+        };
+    </script>
+</body>
+</html>
