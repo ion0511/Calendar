@@ -71,7 +71,7 @@
         <div id="lock-screen" class="lock-screen absolute inset-0 z-40 flex flex-col justify-between p-6 text-white transition-all duration-500 transform translate-y-0">
             <!-- Clock & Date Header -->
             <div class="mt-12 text-center space-y-1">
-                <div class="text-xs font-medium tracking-widest uppercase opacity-80">대한황실 동궁전</div>
+                <div class="text-xs font-medium tracking-widest uppercase opacity-80">동궁전</div>
                 <h1 class="text-6xl font-light tracking-tight">12:31</h1>
                 <p class="text-sm font-medium text-gray-200">2025년 12월 31일 수요일</p>
             </div>
@@ -166,14 +166,14 @@
                     <div class="flex justify-between items-baseline border-b border-gray-100 pb-2">
                         <div>
                             <h2 id="sheet-date-title" class="text-lg font-bold text-gray-800">12월 31일 (수)</h2>
-                            <p id="sheet-sub-title" class="text-xs text-gray-400">황태자비 이여주 개인 다이어리</p>
+                            <p id="sheet-sub-title" class="text-xs text-gray-400">캘린더</p>
                         </div>
                         <span id="badge-count" class="text-[11px] font-semibold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">일정 1개</span>
                     </div>
 
                     <!-- Events List -->
                     <div class="space-y-2">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">오늘의 황실·학교 일정</h3>
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">오늘의 일정</h3>
                         <div id="sheet-events-container" class="space-y-1.5">
                             <!-- Events injected via JS -->
                         </div>
@@ -182,12 +182,11 @@
                     <!-- Diary Card Section -->
                     <div class="space-y-1.5">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
-                            <i class="fa-solid fa-book-open text-pink-400"></i> 여주의 비밀 일기장
+                            <i class="fa-solid fa-book-open text-pink-400"></i> 메모
                         </h3>
                         <div id="sheet-diary-card" class="bg-gradient-to-br from-pink-50 to-orange-50 border border-pink-200/60 rounded-2xl p-4 text-gray-800 text-xs leading-relaxed shadow-sm relative">
-                            <i class="fa-solid fa-quote-left absolute top-3 right-3 text-pink-200 text-xl"></i>
                             <p id="sheet-diary-content" class="relative z-10 font-normal">
-                                "보신각 행사 끝나고 황실 별장. 2025년 마지막 날을 별장에서 단둘이 보내다니... 내 다사다난 고3 인생 수고했다 진짜."
+                                보신각 행사 끝나고 황실 별장. 2025년 마지막 날을 별장에서 단둘이 보내다니... 내 다사다난 고3 인생 수고했다 진짜.
                             </p>
                         </div>
                     </div>
@@ -209,7 +208,7 @@
                     { title: "태후·황후마마 강제 면담", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
                     { title: "국혼 발표", category: "royal", color: "bg-red-100 text-red-700 border-red-200" }
                 ],
-                diary: "오늘 애들이랑 같이 캔버스 왁구 짜기로 했는데 엄마 아빠가 갑자기 집으로 오라길래 갔더니 그대로 궁으로 끌려감... 태후마마랑 황후마마 앞에서 숨도 못 쉬고 앉아있다 왔다. 15년 전에 선황 폐하랑 우리 할아버지가 약속한 거라는데 왜 내가 당해야 함?😭 오시온 이 인간은 얼굴도 안 비추고 진짜 개빡친다."
+                diary: `오늘 애들이랑 같이 캔버스 왁구 짜기로 했는데 엄마 아빠가 갑자기 집으로 오라길래 갔더니 그대로 궁으로 끌려감... 태후마마랑 황후마마 앞에서 숨도 못 쉬고 앉아있다 왔다. 15년 전에 선황 폐하랑 우리 할아버지가 약속한 거라는데 왜 내가 당해야 함?😭 오시온 이 인간은 얼굴도 안 비추고 진짜 개빡친다.`
             },
             "2025-10-20": {
                 events: [
@@ -223,24 +222,23 @@
                     { title: "공식 입궁", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
                     { title: "대례복 1차 치수 측정", category: "royal", color: "bg-purple-100 text-purple-700 border-purple-200" }
                 ],
-                diary: "결국 오늘 입궁함. 침서가 넓긴 한데 잠이 올 리가 있나. 침선장 어르신 오셔서 대례복 치수 재는데 옷이 무슨 100근은 되는 것 같음 웩. 벌써 집에 가고 싶다. 여기서 어떻게 평생 살아ㅠㅠㅠ"
+                diary: `결국 오늘 입궁함. 침서가 넓긴 한데 잠이 올 리가 있나. 침선장 어르신 오셔서 대례복 치수 재는데 옷이 무슨 100근은 되는 것 같음 웩. 벌써 집에 가고 싶다. 여기서 어떻게 평생 살아ㅠㅠㅠ`
             },
             "2025-10-27": {
                 events: [
                     { title: "가례 순서 및 국혼 의절 훈련", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
                 ],
-                diary: "최상궁 언니의 족집게 강의 시작됨. 발걸음 각도까지 지적받음. 오시온 이 자식은 지나가면서 자세가 엉성하다고 한마디 던지고 가는데 진짜 꿀밤 때리고 싶다👊👊"
+                diary: `최상궁 언니의 족집게 강의 시작됨. 발걸음 각도까지 지적받음. 오시온 이 자식은 지나가면서 자세가 엉성하다고 한마디 던지고 가는데 진짜 꿀밤 때리고 싶다👊👊`
             },
             "2025-11-01": {
                 events: [
                     { title: "예법 문답", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
                 ],
-                diary: "토요일인데도 문안 인사는 드리는구나. 밤에는 몰래 패드에다 풍경화 구도만 슬쩍 끄적였다. 궁에서는 붓도 못 잡게 하니까 답답해 미칠 것 같음... 살기 위해 머리로라도 그린다😭"
+                diary: `토요일인데도 문안 인사는 드리는구나. 밤에는 몰래 패드에다 풍경화 구도만 슬쩍 끄적였다. 궁에서는 붓도 못 잡게 하니까 답답해 미칠 것 같음... 살기 위해 머리로라도 그린다😭`
             },
             "2025-11-04": {
                 events: [
-                    { title: "동궁전 안부 문안", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
-                    { title: "국혼 예복 2차 가가례 시연", category: "royal", color: "bg-purple-100 text-purple-700 border-purple-200" }
+                    { title: "동궁전 안부 문안", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
                 ],
                 diary: null
             },
@@ -248,89 +246,97 @@
                 events: [
                     { title: "🔥 가례 의절·교명문 암기 시험", category: "exam", color: "bg-red-100 text-red-700 border-red-200" }
                 ],
-                diary: "지옥의 예법 시험 끝. 오시온이 갑자기 찾아오는 바람에 컨닝한 거 들켜서 최상궁 언니한테 엄청 혼났다ㅠㅠ 그래도 통과해서 다행😮‍💨"
+                diary: `지옥의 예법 시험 끝. 오시온이 갑자기 찾아오는 바람에 컨닝한 거 들켜서 최상궁 언니한테 엄청 혼났다ㅠㅠ 그래도 통과해서 다행😮‍💨`
             },
             "2025-11-10": {
                 events: [
                     { title: "졸전 1차 검토", category: "school", color: "bg-pink-100 text-pink-700 border-pink-200" },
                     { title: "대례복 적의 최종 시착", category: "royal", color: "bg-purple-100 text-purple-700 border-purple-200" }
                 ],
-                diary: "학교에선 선생님이 졸전 진도 늦다고 혼내고 궁에서는 최상궁 언니가 걸음걸이 빠르다고 혼냄. 나더러 어쩌라고!"
+                diary: `학교에선 선생님이 졸전 진도 늦다고 혼내고 궁에서는 최상궁 언니가 걸음걸이 빠르다고 혼냄. 나더러 어쩌라고!`
             },
             "2025-11-12": {
                 events: [
-                    { title: "집에 다녀옴!", category: "escape", color: "bg-amber-100 text-amber-800 border-amber-200" }
+                    { title: "집", category: "escape", color: "bg-amber-100 text-amber-800 border-amber-200" }
                 ],
-                diary: "근위대 눈 피해서 택시 타고 집으로 튀었는데 오시온 이 자식이 바로 쫓아옴ㅠㅠ 그래도 오랜만에 엄마 아빠 보고 밥 따뜻하게 먹어서 좋았다."
+                diary: `근위대 눈 피해서 택시 타고 집으로 튀었는데 오시온 이 자식이 바로 쫓아옴ㅠㅠ 그래도 오랜만에 엄마 아빠 보고 밥 따뜻하게 먹어서 좋았다💜`
             },
             "2025-11-13": {
                 events: [
                     { title: "황후전 문안(밤)", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
                 ],
-                diary: "오시온 차 타고 강제 복귀당함. 최상궁 언니한테 잔소리 엄청 들었는데 황후마마한테도 또 들었다ㅠㅠ 오시온 넌 두고 봐라."
+                diary: `오시온 차 타고 강제 복귀당함. 최상궁 언니한테 잔소리 엄청 들었는데 황후마마한테도 또 들었다ㅠㅠ 오시온 넌 두고 봐라...`
             },
             "2025-11-18": {
                 events: [
-                    { title: "국혼 공식사진 촬영", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
-                    { title: "동궁전 가례 예행 연습", category: "royal", color: "bg-purple-100 text-purple-700 border-purple-200" }
+                    { title: "국혼 공식사진 촬영", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
                 ],
-                diary: "카메라 앞에서 웃느라 입술 경련 일어나는 줄 알았다. 근데 옆에서 오시온 이 자식이 억지 미소라고 놀림. 그래 너 사진 잘 받아서 좋겠다;"
+                diary: `카메라 앞에서 웃느라 입술 경련 일어나는 줄 알았다. 근데 옆에서 오시온 이 자식이 억지 미소라고 놀림. 그래 너 사진 잘 받아서 좋겠다;`
             },
-            "2025-11-19": {
-                events: [
-                    { title: "국혼 전야 자정 하례", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
-                    { title: "태후전 수라 접대", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
-                ],
-                diary: "내일이 국혼이라니 말도 안 됨. 적관 잠깐 썼을 뿐인데 무거워 죽는 줄ㅠㅠ 이걸 어떻게 하루 종일 쓰고 있지? 오시온이 대신 써주면 안 되나?😑"
+            "2025-11-21": {
+                events: [{ title: "가례 법도 최종 점검", category: "royal", color: "bg-amber-100 text-amber-700 border-amber-200" }],
+                diary: null
+            },
+            "2025-11-22": {
+                events: [{ title: "궁내 하례 예행 연습", category: "royal", color: "bg-purple-100 text-purple-700 border-purple-200" }],
+                diary: null
+            },
+            "2025-11-23": {
+                events: [{ title: "궁내 하례 예행 연습", category: "royal", color: "bg-purple-100 text-purple-700 border-purple-200" }],
+                diary: null
+            },
+            "2025-11-24": {
+                events: [{ title: "국혼 전야 자정 하례", category: "royal", color: "bg-rose-100 text-rose-700 border-rose-200" }],
+                diary: `내일이 국혼이라니 말도 안 됨. 적관 잠깐 썼을 뿐인데 무거워 죽는 줄ㅠㅠ 이걸 어떻게 하루 종일 쓰고 있지? 오시온이 대신 써주면 안 되나?😑`
             },
             "2025-11-25": {
                 events: [
-                    { title: "👑 국혼", category: "royal", color: "bg-red-500 text-white font-bold border-red-600" }
+                    { title: "국혼", category: "royal", color: "bg-red-500 text-white font-bold border-red-600" }
                 ],
-                diary: "드디어 결혼식... 아니 국혼 함. 대례복 무게만 10kg은 나가는 듯. 가만히 서 있는데 목디스크 오는 줄 알았다. 카메라 플래시 터지는데 속으로 떨지 말자고 수백 번 외침. 오시온 옆모습 보는데 저 자식도 긴장했는지 턱선이 굳어 있더라. 짜식. 으. 너무 추웠어..."
+                diary: `드디어 결혼식... 아니 국혼 함. 대례복 무게만 10kg은 나가는 듯. 가만히 서 있는데 목디스크 오는 줄 알았다. 카메라 플래시 터지는데 속으로 떨지 말자고 수백 번 외침. 오시온 옆모습 보는데 저 자식도 긴장했는지 턱선이 굳어 있더라. 짜식. 으. 너무 추웠어...`
             },
             "2025-11-27": {
                 events: [
                     { title: "야작 시작", category: "school", color: "bg-pink-100 text-pink-700 border-pink-200" }
                 ],
-                diary: "이제 국혼도 끝났으니 본격적으로 졸전 준비 시작! 애들이랑 한 달 만에 엽떡 흡입함ㅎㅎ 국혼 수라상보다 떡볶이가 100배 맛있다!!!"
+                diary: `이제 국혼도 끝났으니 본격적으로 졸전 준비 시작! 애들이랑 한 달 만에 엽떡 흡입함ㅎㅎ 국혼 수라상보다 떡볶이가 100배 맛있다!!!`
             },
             "2025-11-29": {
                 events: [
-                    { title: "야작", category: "school", color: "bg-pink-100 text-pink-700 border-pink-200" }
+                    { title: "미술실 조명 점검", category: "school", color: "bg-pink-100 text-pink-700 border-pink-200" }
                 ],
-                diary: "오시온이랑 여전히 냉전 중. 오늘도 밤 10시 넘게 야작하는데 공 내관님이 차 대기시켜놓고 계셔서 어쩔 수 없이 귀가함."
+                diary: `오시온이랑 여전히 냉전 중. 오늘도 밤 10시 넘게 야작하는데 공 내관님이 차 대기시켜놓고 계셔서 어쩔 수 없이 귀가함.`
             },
             "2025-12-02": {
                 events: [
                     { title: "유화 채색 2차", category: "school", color: "bg-pink-100 text-pink-700 border-pink-200" },
                     { title: "황후전 차담회", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
                 ],
-                diary: "학교에서 붓 잡다가 궁 와서 찻잔 들려니 손이 덜덜 떨림."
+                diary: `학교에서 붓 잡다가 궁 와서 찻잔 들려니 손이 덜덜 떨림.`
             },
             "2025-12-06": {
                 events: [
                     { title: "황후전 문안", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
                 ],
-                diary: "문안 인사 드리다 쌍코피 팡 터짐... 태후마마 기겁하시고 오시온이 나 끌고 나감. 근데 이 개자식이 감히 내 그림 작업을 금지시켜? 야 캔버스 배경 마무리해야 된다고 ㅠㅠㅠ!"
+                diary: `문안 인사 드리다 쌍코피 팡 터짐... 태후마마 기겁하시고 오시온이 나 끌고 나감. 근데 이 개자식이 감히 내 그림 작업을 금지시켜? 야 캔버스 배경 마무리해야 된다고 ㅠㅠㅠ!`
             },
             "2025-12-07": {
                 events: [
                     { title: "별궁 휴식", category: "royal", color: "bg-green-100 text-green-700 border-green-200" }
                 ],
-                diary: "궁에서 쉬고 있는데 오시온이 학교에 있던 내 졸전 캔버스를 별궁으로 가지고 옴. 어이없어... 그래도 별궁에서 작업할 수 있게 해줬으니 그림은 완성해야지😡"
+                diary: `궁에서 쉬고 있는데 오시온이 학교에 있던 내 졸전 캔버스를 별궁으로 가지고 옴. 어이없어... 그래도 별궁에서 작업할 수 있게 해줬으니 그림은 완성해야지😡`
             },
             "2025-12-13": {
                 events: [
                     { title: "유화 마무리 작업", category: "school", color: "bg-pink-100 text-pink-700 border-pink-200" }
                 ],
-                diary: "이제 졸전까지 5일 남음. 마지막 작업하느라 하루 종일 별궁에서 안 나감. 그래도 졸전 얼마 안 남아서 작업하게 봐줘서 다행이다. 오시온도 나 안 찾던데 설마 자기 작업 바빠서 봐준 건 아니겠지?"
+                diary: `이제 졸전까지 5일 남음. 마지막 작업하느라 하루 종일 별궁에서 안 나감. 그래도 졸전 얼마 안 남아서 작업하게 봐줘서 다행이다. 오시온도 나 안 찾던데 설마 자기 작업 바빠서 봐준 건 아니겠지?`
             },
             "2025-12-18": {
                 events: [
                     { title: "🎨졸업 전시회", category: "school", color: "bg-amber-100 text-amber-800 border-amber-300 font-bold" }
                 ],
-                diary: "황실 어른들 오셔서 민망해 죽는 줄 알았는데 오시온 이 미친자가 자기 출품작이랍시고 내 얼굴 걸어놓음😳 진심 쪽팔려 미칠 것 같아서 복수하겠다고 오시온 볼에 냅다 뽀뽀해 버림. 오시온 당황한 표정 어이없어. 흥."
+                diary: `황실 어른들 오셔서 민망해 죽는 줄 알았는데 오시온 이 미친자가 자기 출품작이랍시고 내 얼굴 걸어놓음😳 진심 쪽팔려 미칠 것 같아서 복수하겠다고 오시온 볼에 냅다 뽀뽀해 버림. 천하의 황태자도 당황하긴 하는구나. 메롱~`
             },
             "2025-12-22": {
                 events: [
@@ -340,29 +346,29 @@
             },
             "2025-12-24": {
                 events: [
-                    { title: "🎄 별궁 궁꾸(트리 완성)", category: "party", color: "bg-emerald-100 text-emerald-800 border-emerald-200" }
+                    { title: "🎄별궁 궁꾸", category: "party", color: "bg-emerald-100 text-emerald-800 border-emerald-200" }
                 ],
-                diary: "내일 파티 준비한다고 정신 없었는데 오시온이 느닷 없이 찾아와서 시비 거는 바람에 싸우다가 기습 키스당함... 미친 거 아님?! 진짜 고소할 거야 이 개자식!!!"
+                diary: `내일 파티 준비한다고 정신 없었는데 오시온이 느닷 없이 찾아와서 시비 거는 바람에 싸우다가 기습 키스당함... 미친 거 아님?! 진짜 고소할 거야 이 개자식!!!`
             },
             "2025-12-25": {
                 events: [
                     { title: "황실 어린이 자선행사", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
                     { title: "크리스마스 파티", category: "party", color: "bg-red-100 text-red-700 border-red-200" }
                 ],
-                diary: "오전에 오시온이랑 어린이 자선행사 다녀오고, 오후에는 애들이랑 크리스마스 파티함! 밤새 놀려고 했는데 오시온이 잠은 동궁전에서 자야 한다고 고집 피워서 끌려옴. 크리스마스 선물이라고 보석 목걸이 주는데, 감동은 무슨! 앙금 안 풀렸다 너.."
+                diary: `오전에 오시온이랑 어린이 자선행사 다녀오고, 오후에는 애들이랑 크리스마스 파티함! 밤새 놀려고 했는데 오시온이 잠은 동궁전에서 자야 한다고 고집 피워서 끌려옴. 크리스마스 선물이라고 보석 목걸이 주는데, 감동은 무슨! 앙금 안 풀렸다 너..`
             },
             "2025-12-29": {
                 events: [
                     { title: "겨울방학 시작", category: "school", color: "bg-blue-100 text-blue-700 border-blue-200" },
                     { title: "황실 연말 감사제 준비", category: "royal", color: "bg-indigo-100 text-indigo-700 border-indigo-200" }
                 ],
-                diary: "드디어 방학... 그러나 황태자비에게 방학이란 없다. 종묘제례 공부 시작함😭"
+                diary: `드디어 방학... 그러나 황태자비에게 방학이란 없다. 종묘제례 공부 시작함😭`
             },
             "2025-12-31": {
                 events: [
                     { title: "보신각 타종행사", category: "royal", color: "bg-purple-600 text-white font-bold border-purple-700" }
                 ],
-                diary: "보신각 행사 끝나고 황실 별장. 2025년 마지막 날을 별장에서 단둘이 보내다니... 내 다사다난 고3 인생 수고했다 진짜."
+                diary: `보신각 행사 끝나고 황실 별장. 2025년 마지막 날을 별장에서 단둘이 보내다니... 내 다사다난 고3 인생 수고했다 진짜.`
             }
         };
 
@@ -529,7 +535,7 @@
             // Render Diary
             if (data && data.diary) {
                 sheetDiaryCard.classList.remove('hidden');
-                sheetDiaryContent.textContent = `"${data.diary}"`;
+                sheetDiaryContent.textContent = data.diary;
             } else {
                 sheetDiaryCard.classList.remove('hidden');
                 sheetDiaryContent.textContent = "(등록된 일기가 없습니다)";
